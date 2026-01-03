@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
@@ -8,3 +9,15 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv
 }
+=======
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+>>>>>>> 34dc1a5863d0f6a3fd792fc10a09c52a5bf3d427
