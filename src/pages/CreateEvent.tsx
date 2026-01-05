@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { FilePath } from 'tailwindcss/types/config'
 
 type FormData = {
   event_name: string
   organizer: string
-  event_type: 'Workshop' | 'Hackathon' | 'Seminar' | ''
+  event_type: 'Workshop' | 'Hackathon' | 'Seminar' | 'Contest' |''
   event_date: string
   budget_allocated: string
   budget_spent: string
   registered_participants: string
   actual_attendance: string
+  actual_attendees: FilePath
+  registered_teams: FilePath
   what_went_well: string
   what_went_wrong: string
   challenges_faced: string
@@ -30,6 +33,8 @@ export default function CreateEvent() {
     budget_spent: '',
     registered_participants: '',
     actual_attendance: '',
+    actual_attendees: '',
+    registered_teams: '',
     what_went_well: '',
     what_went_wrong: '',
     challenges_faced: '',
@@ -75,6 +80,8 @@ export default function CreateEvent() {
         budget_spent: parseFloat(formData.budget_spent),
         registered_participants: parseInt(formData.registered_participants),
         actual_attendance: parseInt(formData.actual_attendance),
+        actual_attendees: formData.actual_attendees,
+        registered_teams: formData.registered_teams,
         what_went_well: formData.what_went_well,
         what_went_wrong: formData.what_went_wrong,
         challenges_faced: formData.challenges_faced,
@@ -169,6 +176,7 @@ export default function CreateEvent() {
                   <option value="Workshop">Workshop</option>
                   <option value="Hackathon">Hackathon</option>
                   <option value="Seminar">Seminar</option>
+                  <option value="Contest">Contest</option>
                 </select>
               </div>
               <div>
@@ -231,6 +239,38 @@ export default function CreateEvent() {
                     value={formData.actual_attendance}
                     onChange={(e) => handleChange('actual_attendance', e.target.value)}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    placeholder="0"
+                    min="0"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">List of Attendees</label>
+                  <input
+                    type="file"
+                    value={formData.actual_attendees}
+                    onChange={(e) => handleChange('actual_attendees', e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none block text-sm text-gray-500
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-blue-50 file:text-blue-700
+      hover:file:bg-blue-100"
+                    placeholder="0"
+                    min="0"
+                  />
+                </div>
+                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">List of Teams</label>
+                  <input
+                    type="file"
+                    value={formData.registered_teams}
+                    onChange={(e) => handleChange('registered_teams', e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none block text-sm text-gray-500
+      file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-blue-50 file:text-blue-700
+      hover:file:bg-blue-100"
                     placeholder="0"
                     min="0"
                   />
