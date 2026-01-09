@@ -1,50 +1,25 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import GlassCard from "./components/GlassCard";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateEvent from "./pages/CreateEvent";
 import ReportView from "./pages/ReportView";
-import Login from "./pages/Login";
-import Hero from "./components/Hero";
+import UpcomingEvents from "./pages/UpcomingEvents";
 
-export interface EventType {
-  id: number;
-  name: string;
-  type: string;
-  date: string;
-  budget: string;
-  participants: string;
-  feedback?: string;
-}
 
 function App() {
-  const [events, setEvents] = useState<EventType[]>([]);
-
   return (
     <Router>
       <Routes>
-        {/* Landing Page */}
-        <Route path="/" element={<Hero />} />
-
-        {/* Login Page */}
+        <Route path="/" element={<GlassCard />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Dashboard showing all upcoming events */}
-        <Route
-          path="/dashboard"
-          element={<Dashboard events={events} setEvents={setEvents} />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create-event" element={<CreateEvent />} />
+        <Route path="/reports" element={<ReportView />} />
+        <Route path="/upcoming-events" element={<UpcomingEvents />} />
 
-        {/* Create or Update Event */}
-        <Route
-          path="/create-event"
-          element={<CreateEvent events={events} setEvents={setEvents} />}
-        />
-
-        {/* View individual event with chat/PDF */}
-        <Route
-          path="/report/:eventId"
-          element={<ReportView events={events} />}
-        />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

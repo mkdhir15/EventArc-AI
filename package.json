@@ -11,7 +11,9 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
     "@tailwindcss/vite": "^4.1.18",
-    "framer-motion": "^12.24.0",
+    "framer-motion": "^12.24.7",
+    "openai": "^6.15.0",
+    "pdfjs-dist": "^5.4.530",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^6.21.1",

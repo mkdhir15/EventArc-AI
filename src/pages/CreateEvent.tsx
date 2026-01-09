@@ -1,127 +1,63 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { EventType } from "../App";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-interface CreateEventProps {
-  events: EventType[];
-  setEvents: React.Dispatch<React.SetStateAction<EventType[]>>;
-}
-
-const CreateEvent: React.FC<CreateEventProps> = ({ setEvents }) => {
+const CreateEvent = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [eventData, setEventData] = useState({
     name: "",
-    type: "",
     date: "",
-    budget: "",
-    participants: "",
+    type: "",
+    participants: 0,
+    budget: 0,
     feedback: "",
   });
-  const [editingId, setEditingId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (location.state && (location.state as any).event) {
-      const event = (location.state as any).event as EventType;
-      setEventData({
-        name: event.name,
-        type: event.type,
-        date: event.date,
-        budget: event.budget,
-        participants: event.participants,
-        feedback: event.feedback || "",
-      });
-      setEditingId(event.id);
-    }
-  }, [location.state]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setEventData((prev) => ({ ...prev, [name]: value }));
+    setEventData({
+      ...eventData,
+      [name]: name === "participants" || name === "budget"
+        ? Number(value)
+        : value,
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const isValid =
+    eventData.name &&
+    eventData.date &&
+    eventData.type &&
+    eventData.participants > 0 &&
+    eventData.budget > 0 &&
+    eventData.feedback.trim() !== "";
 
-    if (editingId) {
-      setEvents((prev) =>
-        prev.map((ev) =>
-          ev.id === editingId ? { id: editingId, ...eventData } : ev
-        )
-      );
-    } else {
-      setEvents((prev) => [{ id: Date.now(), ...eventData }, ...prev]);
-    }
-
+  const handleSubmit = () => {
+    if (!isValid) return;
     navigate("/dashboard");
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white/5 rounded-xl p-8 w-full max-w-md backdrop-blur-md"
-      >
-        <h2 className="text-xl font-semibold mb-4">
-          {editingId ? "Update Event" : "Create Event"}
-        </h2>
-        <input
-          name="name"
-          placeholder="Event Name"
-          value={eventData.name}
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2.5 rounded-lg bg-white/10 outline-none"
-        />
-        <input
-          name="type"
-          placeholder="Event Type"
-          value={eventData.type}
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2.5 rounded-lg bg-white/10 outline-none"
-        />
-        <input
-          type="date"
-          name="date"
-          value={eventData.date}
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2.5 rounded-lg bg-white/10 outline-none"
-        />
-        <input
-          name="budget"
-          placeholder="Budget Allocated"
-          value={eventData.budget}
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2.5 rounded-lg bg-white/10 outline-none"
-        />
-        <input
-          name="participants"
-          placeholder="Registered Participants"
-          value={eventData.participants}
-          onChange={handleChange}
-          required
-          className="w-full mb-3 p-2.5 rounded-lg bg-white/10 outline-none"
-        />
-        <textarea
-          name="feedback"
-          placeholder="Additional Feedback (Optional)"
-          value={eventData.feedback}
-          onChange={handleChange}
-          className="w-full mb-3 p-2.5 rounded-lg bg-white/10 outline-none resize-none"
-        />
+    <div className="min-h-screen bg-slate-950 text-white p-8">
+      <h2 className="text-2xl text-indigo-400 mb-6">Create Event</h2>
+
+      <div className="space-y-4 max-w-xl">
+        <input name="name" placeholder="Event Name" onChange={handleChange} className="w-full p-3 bg-black/40 rounded" />
+        <input type="date" name="date" onChange={handleChange} className="w-full p-3 bg-black/40 rounded" />
+        <input name="type" placeholder="Event Type" onChange={handleChange} className="w-full p-3 bg-black/40 rounded" />
+        <input type="number" name="participants" placeholder="Participants" onChange={handleChange} className="w-full p-3 bg-black/40 rounded" />
+        <input type="number" name="budget" placeholder="Budget" onChange={handleChange} className="w-full p-3 bg-black/40 rounded" />
+        <textarea name="feedback" placeholder="Event Description / Feedback" onChange={handleChange} className="w-full p-3 bg-black/40 rounded" />
+
         <button
-          type="submit"
-          className="w-full py-2 mt-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105 transition"
+          disabled={!isValid}
+          onClick={handleSubmit}
+          className="px-6 py-2 bg-green-500 rounded disabled:bg-gray-600"
         >
-          {editingId ? "Update Event" : "Create Event"}
+          Create Event
         </button>
-      </form>
+      </div>
     </div>
   );
 };

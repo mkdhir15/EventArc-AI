@@ -1,113 +1,92 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import VantaBackground from "../components/VantaBackground";
+import CLOUDS from "vanta/dist/vanta.clouds.min";
+import * as THREE from "three";
 
 const Login = () => {
+  const vantaRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  const [remember, setRemember] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
-    roll: "",
-    department: "",
     email: "",
+    mobile: "",
     password: "",
   });
 
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-  const [rememberMe, setRememberMe] = useState(false);
+  useEffect(() => {
+    if (!vantaRef.current) return;
 
-  // 🔐 All fields must be filled
-  const isFormValid = Object.values(form).every(
-    (value) => value.trim() !== ""
-  );
+    const effect = CLOUDS({
+      el: vantaRef.current,
+      THREE,
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200,
+      minWidth: 200,
+      skyColor: 0x020617,
+      cloudColor: 0x4f46e5,
+      cloudShadowColor: 0x000000,
+      sunColor: 0xffffff,
+      speed: 0.6,
+    });
+
+    return () => effect.destroy();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isFormValid) return;
-
-    // 🔒 Example usage of remember me
-    if (rememberMe) {
-      localStorage.setItem("rememberUser", "true");
-    }
-
-    navigate("/dashboard");
-  };
-
-  const handleForgotPassword = () => {
-    // later you can connect Supabase reset here
-    navigate("/forgot-password");
-  };
-
-  const inputClass = (field: string) =>
-    `w-full p-2.5 rounded-lg outline-none transition
-     bg-white/20 placeholder-white/60
-     ${
-       touched[field] && !form[field as keyof typeof form]
-         ? "border border-red-400"
-         : "border border-white/20"
-     }`;
+  const isFormValid =
+    form.name.trim() !== "" &&
+    form.email.trim() !== "" &&
+    form.mobile.trim() !== "" &&
+    form.password.trim() !== "";
 
   return (
-    <VantaBackground>
-      <div className="flex items-center justify-center w-full px-4">
-        <div
-          className="
-            w-full max-w-md
-            backdrop-blur-xl bg-white/10
-            border border-white/20
-            rounded-2xl shadow-2xl
-            p-8 text-white
-          "
-        >
-          <h1 className="text-2xl font-bold mb-6 text-center">
-            Sign in to your account
+    <section
+      ref={vantaRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/40" />
+
+      {/* Login Card */}
+      <div className="relative z-10 w-full max-w-md px-6">
+        <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl p-8 text-white">
+          <h1 className="text-2xl font-bold text-center text-indigo-400 mb-6">
+            Sign in to EventArc AI
           </h1>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="space-y-4">
             <input
               name="name"
               placeholder="Full Name"
               value={form.name}
               onChange={handleChange}
-              onBlur={handleBlur}
-              className={inputClass("name")}
-            />
-
-            <input
-              name="roll"
-              placeholder="Roll Number"
-              value={form.roll}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={inputClass("roll")}
-            />
-
-            <input
-              name="department"
-              placeholder="Department"
-              value={form.department}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              className={inputClass("department")}
+              className="w-full p-2 rounded-lg bg-black/40 border border-white/20 focus:border-indigo-400 outline-none"
             />
 
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Email Address"
               value={form.email}
               onChange={handleChange}
-              onBlur={handleBlur}
-              className={inputClass("email")}
+              className="w-full p-2 rounded-lg bg-black/40 border border-white/20 focus:border-indigo-400 outline-none"
+            />
+
+            <input
+              type="tel"
+              name="mobile"
+              placeholder="Mobile Number"
+              value={form.mobile}
+              onChange={handleChange}
+              className="w-full p-2 rounded-lg bg-black/40 border border-white/20 focus:border-indigo-400 outline-none"
             />
 
             <input
@@ -116,56 +95,39 @@ const Login = () => {
               placeholder="Password"
               value={form.password}
               onChange={handleChange}
-              onBlur={handleBlur}
-              className={inputClass("password")}
+              className="w-full p-2 rounded-lg bg-black/40 border border-white/20 focus:border-indigo-400 outline-none"
             />
 
-            {/* Remember + Forgot */}
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
+            {/* Remember Me */}
+            <div className="flex items-center justify-between text-sm text-white/70">
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
+                  checked={remember}
+                  onChange={() => setRemember(!remember)}
                   className="accent-indigo-500"
                 />
                 Remember me
               </label>
-
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="text-indigo-300 hover:underline"
-              >
-                Forgot password?
-              </button>
             </div>
 
-            {/* Submit */}
             <button
-              type="submit"
               disabled={!isFormValid}
-              className={`
-                w-full py-3 rounded-xl font-semibold transition-all
+              onClick={() => navigate("/dashboard")}
+              className={`w-full py-2 rounded-xl font-semibold transition
                 ${
                   isFormValid
-                    ? "bg-indigo-500 hover:bg-indigo-600 cursor-pointer"
-                    : "bg-gray-500/40 cursor-not-allowed opacity-60"
+                    ? "bg-gradient-to-r from-indigo-500 to-purple-600 hover:scale-105"
+                    : "bg-white/20 cursor-not-allowed"
                 }
               `}
             >
-              Sign in
+              Sign In
             </button>
-
-            {!isFormValid && (
-              <p className="text-xs text-white/60 text-center">
-                Please fill all fields to continue
-              </p>
-            )}
-          </form>
+          </div>
         </div>
       </div>
-    </VantaBackground>
+    </section>
   );
 };
 
