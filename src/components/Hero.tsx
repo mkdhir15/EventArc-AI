@@ -1,16 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import VantaBackground from "./VantaBackground";
-import GlassCard from "./GlassCard";
+type HeroProps = {
+  onGetStarted: () => void;
+};
 
-const Hero = () => {
-  const navigate = useNavigate();
-
+const Hero = ({ onGetStarted }: HeroProps) => {
   return (
-    <VantaBackground>
-      <GlassCard
-        onGetStarted={() => navigate("/login")}
-      />
-    </VantaBackground>
+    <div className="flex items-center justify-center min-h-screen">
+      <button
+        onClick={onGetStarted}
+        className="px-8 py-3 rounded-xl bg-indigo-500 text-white"
+      >
+        Get Started
+      </button>
+    </div>
   );
 };
 

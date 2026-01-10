@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+/* ================= TYPES ================= */
+
 interface EventNote {
   message: string;
   author: "Admin" | "Organizer";
@@ -17,10 +19,12 @@ interface EventType {
   date: string;
   budget: string;
   participants: string;
-  feedback?: string;
+  feedback: string;
   notes: EventNote[];
   files: EventFile[];
 }
+
+/* ================= COMPONENT ================= */
 
 const Dashboard = () => {
   const isAdmin = true;
@@ -30,15 +34,15 @@ const Dashboard = () => {
   const [editingEvent, setEditingEvent] = useState<EventType | null>(null);
   const [noteText, setNoteText] = useState("");
 
-  const [eventData, setEventData] = useState({
+  const [eventData, setEventData] = useState<Omit<EventType, "id">>({
     name: "",
     type: "",
     date: "",
     budget: "",
     participants: "",
     feedback: "",
-    notes: [] as EventNote[],
-    files: [] as EventFile[],
+    notes: [],
+    files: [],
   });
 
   const today = new Date().toISOString().split("T")[0];
@@ -46,6 +50,8 @@ const Dashboard = () => {
   const upcomingEvents = events
     .filter((e) => e.date >= today)
     .sort((a, b) => a.date.localeCompare(b.date));
+
+  /* ================= HANDLERS ================= */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -56,8 +62,15 @@ const Dashboard = () => {
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const files = Array.from(e.target.files).map((f) => ({ name: f.name }));
-    setEventData((prev) => ({ ...prev, files: [...prev.files, ...files] }));
+
+    const uploadedFiles: EventFile[] = Array.from(e.target.files).map((file) => ({
+      name: file.name,
+    }));
+
+    setEventData((prev) => ({
+      ...prev,
+      files: [...prev.files, ...uploadedFiles],
+    }));
   };
 
   const addNote = () => {
@@ -77,6 +90,8 @@ const Dashboard = () => {
     setNoteText("");
   };
 
+  /* ================= CREATE / EDIT ================= */
+
   const openCreate = () => {
     setEditingEvent(null);
     setEventData({
@@ -94,7 +109,19 @@ const Dashboard = () => {
 
   const openEdit = (event: EventType) => {
     setEditingEvent(event);
-    setEventData(event);
+
+    // ✅ SAFE MAPPING (FIXES TS ERROR)
+    setEventData({
+      name: event.name,
+      type: event.type,
+      date: event.date,
+      budget: event.budget,
+      participants: event.participants,
+      feedback: event.feedback ?? "",
+      notes: event.notes ?? [],
+      files: event.files ?? [],
+    });
+
     setShowModal(true);
   };
 
@@ -103,7 +130,11 @@ const Dashboard = () => {
 
     if (editingEvent) {
       setEvents((prev) =>
-        prev.map((ev) => (ev.id === editingEvent.id ? { ...eventData, id: ev.id } : ev))
+        prev.map((ev) =>
+          ev.id === editingEvent.id
+            ? { ...eventData, id: ev.id }
+            : ev
+        )
       );
     } else {
       setEvents((prev) => [
@@ -115,9 +146,11 @@ const Dashboard = () => {
     setShowModal(false);
   };
 
+  /* ================= UI ================= */
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-black text-white p-8">
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex justify-between mb-8">
         <h1 className="text-3xl font-bold">Upcoming Events</h1>
         {isAdmin && (
@@ -130,7 +163,7 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Events */}
+      {/* EVENTS */}
       {upcomingEvents.length === 0 ? (
         <p className="text-center text-white/60 mt-24">
           No upcoming events
@@ -177,7 +210,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* MODAL */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
           <div className="bg-slate-900 rounded-2xl w-full max-w-xl p-6 border border-white/10">
@@ -192,10 +225,10 @@ const Dashboard = () => {
               <input name="budget" value={eventData.budget} onChange={handleChange} placeholder="Budget" className="input" />
               <input name="participants" value={eventData.participants} onChange={handleChange} placeholder="Participants" className="input" />
 
-              {/* File Upload */}
+              {/* FILE UPLOAD */}
               <input type="file" multiple onChange={handleFileUpload} className="text-sm" />
 
-              {/* Notes */}
+              {/* NOTES */}
               <div className="bg-white/5 p-3 rounded-lg space-y-2">
                 <div className="max-h-32 overflow-y-auto text-xs">
                   {eventData.notes.map((n, i) => (
@@ -232,6 +265,7 @@ const Dashboard = () => {
         </div>
       )}
 
+      {/* INPUT STYLES */}
       <style>{`
         .input {
           width: 100%;
