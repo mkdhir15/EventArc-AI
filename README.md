@@ -1,86 +1,92 @@
 # EventArc AI
 
-An Event Intelligence System that helps college clubs and organizations analyze event success and automatically generate executive-level reports using AI.
+EventArc AI is an AI-powered platform designed to analyze unstructured and scattered event-related data and convert it into clear, structured, and actionable insights.
 
-## Design Philosophy
+Organizations often receive event information in inconsistent formats such as PDFs, images, documents, and text notes. Reviewing this data manually is slow, inconsistent, and error-prone. EventArc AI addresses this problem by using a large language model to understand the context across multiple files and generate a consolidated evaluation report.Live Application: https://eventarc-ai.vercel.app/
 
-- Clean, professional, minimal Google Workspace-style UI
-- Neutral color palette with soft blue accents
-- Professional typography (Inter font family)
-- Calm, data-focused interface
-- Desktop-first responsive design
+## WorkFlow
+
+EventArc AI:
+
+Accepts multiple unstructured files related to an event
+Understands and correlates information across those files
+Identifies key details, gaps, and inconsistencies
+Produces a structured, readable analysis report
+The system is designed to reduce manual review effort while improving consistency and decision quality.
 
 ## Features
 
-### Dashboard
+## Authentication
 
-- View all analyzed events at a glance
-- Success scores and status indicators
-- Quick access to event reports
-- One-click event creation
+Secure login system to control access
+Ensures only authorized users can submit and review event data
 
-### Multi-Step Event Analysis Form
+## Event Dashboard
 
-- Step 1: Event Metadata (name, organizer, type, date)
-- Step 2: Quantitative Metrics (budget, attendance)
-- Step 3: Qualitative Insights (successes, challenges, issues)
-- Step 4: Satisfaction Rating (1-5 scale with feedback)
-- Progress indicator for clear navigation
+- Central workspace to manage events
+- Create, view, and review multiple event submissions
 
-### AI-Powered Report Generation
+## Unstructured File Ingestion
 
-- Automatic success score calculation (0-100%)
-- Budget efficiency analysis
-- Engagement rate metrics
-- Sentiment analysis from qualitative feedback
-- Three actionable recommendations
-- Professional report layout
+- Supports uploading multiple files without strict formatting
+- Handles mixed data sources such as:
+  - PDFs
+  - Images
+  - Text documents
+  - Notes and forms
 
-### Report View
+## AI-Based Analysis
 
-- Comprehensive intelligence report
-- Visual success score presentation
-- Key insights organized in cards
-- Numbered actionable recommendations
-- Event details summary
+- Uses Google Gemini to reason over all uploaded content collectively
+- Understands context rather than treating files independently
+- Extracts meaningful insights from noisy data
+
+## Structured Report Generation
+
+Generated reports typically include:
+
+- Event summary
+- Key highlights
+- Missing or unclear information
+- Potential risks or inconsistencies
+- Improvement suggestions
 
 ## Tech Stack
 
 - React 18 with TypeScript
-- Vite for build tooling
 - Tailwind CSS for styling
-- React Router for navigation
-- Supabase for database and real-time features
+- Google Gemini Ai model
+- Node.js for Backend
 
-## Database Schema
+## AI Integration
 
-### Events Table
+EventArc AI uses Google Gemini for:
 
-Stores all event information including metadata, quantitative metrics, and qualitative insights.
+- Multimodal understanding (text + documents + images)
+- Contextual reasoning across multiple inputs
+- Natural language summarization and evaluation
+- Insight generation rather than simple extraction
 
-### Reports Table
+## System Flow
 
-Stores AI-generated intelligence reports with success scores, insights, and recommendations.
-
-## Color Palette
-
-- Primary: Blue (#3b82f6, #2563eb)
-- Success: Green (#10b981)
-- Warning: Yellow/Orange (#f59e0b, #ea580c)
-- Neutral: Gray scale (#f8f9fa, #6b7280, #1f2937)
-- Backgrounds: White and light gray
-
-## Typography
-
-- Font Family: Inter
-- Weights: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
-- Clear hierarchy with proper spacing
+User logs into the platform
+Creates a new event entry
+Uploads all related files (structured or unstructured)
+Data is processed by the AI analysis engine
+A consolidated report is generated
+User reviews the output and takes action
 
 ## Design Principles
 
-1. **Clarity First**: Every element serves a clear purpose
-2. **Data-Focused**: Emphasize metrics and insights
-3. **Professional**: Suitable for internal admin tools
-4. **Trustworthy**: Clean design builds confidence
-5. **Calm**: No distracting animations or gamification
-6. **Responsive**: Works across all device sizes
+Simple input, high-quality output
+AI-assisted reasoning, not rigid rules
+Minimal user effort
+Scalable architecture 
+
+## Future Enhancements
+
+- Event scoring and prioritization
+- Comparison across multiple events
+- Audit history and analytics
+- Role-based access control
+- Integration with document storage systems
