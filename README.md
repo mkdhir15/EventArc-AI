@@ -46,6 +46,7 @@ An Event Intelligence System that helps college clubs and organizations analyze 
 
 ## Tech Stack
 
+- Google Gemini
 - React 18 with TypeScript
 - Vite for build tooling
 - Tailwind CSS for styling
